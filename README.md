@@ -39,5 +39,6 @@ Download one of the CSS files from `Jellyfin_Themes/`, open it in a text editor,
 ## Notes
 
 - These themes are designed for Jellyfin Web and clients that load Jellyfin Web from your server.
+- Some mouseover glass animations may not work in the Windows app.
 - If you already have custom CSS, paste the import line above your local overrides.
 - GitHub-backed jsDelivr URLs are used for imports so the CSS is served with browser-friendly stylesheet headers.
