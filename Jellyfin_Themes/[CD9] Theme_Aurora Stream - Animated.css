@@ -1,0 +1,2159 @@
+/*
+ * [CD9] Theme_Aurora Stream - Animated.css
+ *
+ * "Aurora Stream - Animated" is a livelier variant of Aurora Stream
+ * built for the mock host and for Jellyfin Dashboard > Branding custom CSS. It
+ * keeps Jellyfin layouts intact while adding animated ambience, reactive card
+ * effects, animated navigation highlights, and dashboard depth.
+ *
+ */
+/* ==========================================================================
+   Theme tokens
+   ========================================================================== */
+
+:root {
+    --aurora-bg: #07080d;
+    --aurora-bg-soft: #0e111a;
+    --aurora-panel: rgba(18, 21, 32, 0.88);
+    --aurora-panel-solid: #151925;
+    --aurora-panel-raised: #1b2130;
+    --aurora-text: #f5f7fb;
+    --aurora-text-muted: rgba(245, 247, 251, 0.68);
+    --aurora-text-faint: rgba(245, 247, 251, 0.46);
+    --aurora-red: #ff3366;
+    --aurora-cyan: #2de2e6;
+    --aurora-green: #51f6a5;
+    --aurora-amber: #ffcf5a;
+    --aurora-purple: #8c6cff;
+    --aurora-danger: #ff4d5f;
+    --aurora-radius-sm: 0.35rem;
+    --aurora-radius-md: 0.65rem;
+    --aurora-radius-lg: 1rem;
+    --aurora-glow-cyan: 0 0 1.2rem rgba(45, 226, 230, 0.32);
+    --aurora-glow-red: 0 0 1.35rem rgba(255, 51, 102, 0.28);
+    --aurora-shadow-card: 0 0.65rem 1.6rem rgba(0, 0, 0, 0.42);
+    --aurora-shadow-float: 0 1.2rem 3rem rgba(0, 0, 0, 0.55);
+    --aurora-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --aurora-motion-slow: 16s;
+    --aurora-motion-drift: 24s;
+    --aurora-motion-quick: 700ms;
+
+    /* MUI dashboard color variables when available. */
+    --mui-palette-primary-main: var(--aurora-cyan);
+    --mui-palette-secondary-main: var(--aurora-red);
+    --mui-palette-background-default: var(--aurora-bg);
+    --mui-palette-background-paper: var(--aurora-panel-solid);
+}
+
+/* ==========================================================================
+   Global canvas
+   ========================================================================== */
+
+html,
+body {
+    color: var(--aurora-text) !important;
+    accent-color: var(--aurora-cyan);
+    scrollbar-color: rgba(45, 226, 230, 0.55) rgba(10, 12, 18, 0.95);
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+.backgroundContainer {
+    background:
+        linear-gradient(180deg, rgba(7, 8, 13, 0.72), rgba(7, 8, 13, 0.96)),
+        radial-gradient(circle at 50% 0%, rgba(140, 108, 255, 0.16), transparent 34rem) !important;
+}
+
+.itemsContainer>.card>.cardBox {
+    margin-left: 0.1em;
+}
+
+@media (max-width: 100em) {
+    .withSectionTabs .headerTop {
+        padding-bottom: 0;
+    }
+}
+
+.headerTop {
+    padding: .54em 0 0 0;
+}
+
+@media (min-width: 100em) {
+    .withSectionTabs .skinHeader {
+        min-height: 5.95em;
+    }
+
+    .withSectionTabs .headerTabs {
+        align-self: stretch;
+        width: 100%;
+        margin-top: 0;
+    }
+}
+
+/*
+   Jellyfin's profile backdrop setting uses .backdropContainer/.backdropImage as
+   a fixed full-page background. Android presents the same art like a top header
+   backdrop instead. Clip the global backdrop surface to the upper band and make
+   .backgroundContainer transparent only in that band; below it the normal dark
+   theme canvas takes over.
+*/
+.backdropContainer {
+    top: 3.2em;
+    height: 46vh;
+    overflow: hidden;
+}
+
+.backdropContainer .backdropImage {
+    inset: 0;
+    height: 100%;
+}
+
+.backgroundContainer.withBackdrop {
+    background:
+        linear-gradient(
+            180deg,
+            rgba(7, 8, 13, 0.18) 0,
+            rgba(7, 8, 13, 0.38) 40vh,
+            rgba(7, 8, 13, 0.98) 40.05vh,
+            rgba(7, 8, 13, 1) 100%
+        ) !important;
+}
+
+.itemBackdrop {
+	height: 46vh;
+}
+
+.backgroundContainer.withBackdrop::after {
+    content: "";
+    position: fixed;
+    inset: 0 0 auto;
+    height: 46vh;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(7, 8, 13, 0.48), transparent 28%, transparent 72%, rgba(7, 8, 13, 0.46)),
+        linear-gradient(180deg, rgba(7, 8, 13, 0.08), rgba(7, 8, 13, 0.36)) !important;
+}
+
+::selection {
+    color: #071015;
+    background: var(--aurora-cyan);
+}
+
+a,
+.button-link,
+.button-flat:hover,
+.sectionTitleTextButton:hover {
+    color: var(--aurora-cyan) !important;
+}
+
+/* ==========================================================================
+   Header and navigation
+   ========================================================================== */
+
+.skinHeader {
+    color: var(--aurora-text) !important;
+    background:
+        linear-gradient(180deg, rgba(7, 8, 13, 0.92), rgba(7, 8, 13, 0.64) 62%, rgba(7, 8, 13, 0)) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(18px) saturate(150%);
+    transition:
+        background 260ms var(--aurora-ease),
+        border-color 260ms var(--aurora-ease),
+        transform 240ms var(--aurora-ease);
+}
+
+.skinHeader-withBackground,
+.skinHeader.semiTransparent {
+    background: rgba(8, 10, 16, 0.78) !important;
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.28);
+}
+
+.pageTitleWithDefaultLogo {
+    filter: drop-shadow(0 0 0.65rem rgba(45, 226, 230, 0.45));
+}
+
+.headerButton,
+.paper-icon-button-light {
+    border-radius: 999px !important;
+    transition:
+        color 180ms var(--aurora-ease),
+        background 180ms var(--aurora-ease),
+        box-shadow 180ms var(--aurora-ease),
+        transform 180ms var(--aurora-ease);
+}
+
+.paper-icon-button-light:hover:not(:disabled),
+.paper-icon-button-light:active:not(:disabled),
+.paper-icon-button-light.show-focus:focus {
+    color: var(--aurora-cyan) !important;
+    background: rgba(45, 226, 230, 0.14) !important;
+    box-shadow: var(--aurora-glow-cyan);
+    transform: translateY(-1px);
+}
+
+.navMenuOption {
+    border-radius: var(--aurora-radius-md);
+    margin: 0.1rem 0.45rem;
+    color: var(--aurora-text-muted) !important;
+    transition:
+        color 180ms var(--aurora-ease),
+        background 180ms var(--aurora-ease),
+        transform 180ms var(--aurora-ease);
+}
+
+.navMenuOption:hover,
+.navMenuOption:focus,
+.navMenuOption-selected {
+    color: var(--aurora-text) !important;
+    background:
+        linear-gradient(90deg, rgba(255, 51, 102, 0.18), rgba(45, 226, 230, 0.12)) !important;
+    transform: translateX(0.18rem);
+}
+
+.navMenuOption-selected {
+    box-shadow: inset 0.22rem 0 0 var(--aurora-cyan);
+}
+
+/* ==========================================================================
+   Sections, tabs, and page shells
+   ========================================================================== */
+
+.page,
+.mainAnimatedPage,
+.content-primary {
+    color: var(--aurora-text) !important;
+}
+
+.sectionTitle,
+.sectionTitleTextButton,
+h1,
+h2,
+h3 {
+    color: var(--aurora-text) !important;
+    letter-spacing: 0;
+}
+
+.sectionTitle::after {
+    content: "";
+    display: block;
+    width: 3.4rem;
+    height: 0.18rem;
+    margin-top: 0.28rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--aurora-red), var(--aurora-cyan));
+    opacity: 0.85;
+}
+
+.sectionTitleTextButton::after {
+    content: none !important;
+    display: none !important;
+}
+
+#loginPage {
+    /* Keep the login form below the branding splash image. */
+    margin-top: 9em;
+}
+
+#loginPage .sectionTitle::after {
+    content: none !important;
+    display: none !important;
+}
+
+.sectionTabs {
+    gap: 0.35rem;
+	margin-bottom: 6px;
+}
+
+.emby-tab-button,
+.emby-button-foreground {
+    transition:
+        color 180ms var(--aurora-ease),
+        background 180ms var(--aurora-ease),
+        box-shadow 180ms var(--aurora-ease);
+}
+
+.emby-tab-button {
+    border-radius: 999px !important;
+	padding: 0.5em 1.5em !important;
+}
+
+.emby-tab-button:hover,
+.emby-tab-button:focus,
+.emby-tab-button-active {
+    color: #071015 !important;
+    background: linear-gradient(90deg, var(--aurora-cyan), var(--aurora-green)) !important;
+    box-shadow: var(--aurora-glow-cyan);
+}
+
+/* ==========================================================================
+   Cards and library items
+   ========================================================================== */
+
+.card {
+    transition:
+        filter 220ms var(--aurora-ease),
+        transform 220ms var(--aurora-ease);
+}
+
+.cardBox,
+.visualCardBox,
+.cardScalable,
+.cardContent,
+.cardPadder {
+    border-radius: var(--aurora-radius-md) !important;
+}
+
+.cardBox {
+    position: relative;
+    box-sizing: border-box;
+    border: 2px solid transparent;
+    background: rgba(18, 21, 32, 0.72) !important;
+    box-shadow: var(--aurora-shadow-card);
+    transition:
+        box-shadow 220ms var(--aurora-ease),
+        transform 220ms var(--aurora-ease),
+        border-color 220ms var(--aurora-ease),
+        background 220ms var(--aurora-ease);
+}
+
+.cardBox::after {
+    content: none;
+}
+
+.cardBox:not(.visualCardBox) .cardPadder,
+.textCardImageContainer,
+.defaultCardBackground {
+    background:
+        linear-gradient(145deg, rgba(27, 33, 48, 0.98), rgba(12, 15, 23, 0.96)) !important;
+}
+
+.cardImageContainer,
+.cardImage,
+.cardImageContainer img,
+.blurhash-canvas {
+    transition:
+        filter 260ms var(--aurora-ease),
+        box-shadow 260ms var(--aurora-ease),
+        transform 260ms var(--aurora-ease),
+        opacity 260ms var(--aurora-ease);
+}
+
+.cardImageContainer::before {
+    content: "";
+    position: absolute;
+    inset: -28%;
+    z-index: 1;
+    pointer-events: none;
+    display: block;
+    border-radius: inherit;
+    background:
+        linear-gradient(115deg, transparent 22%, rgba(45, 226, 230, 0.28) 42%, rgba(255, 255, 255, 0.22) 49%, rgba(255, 51, 102, 0.2) 57%, transparent 76%);
+    opacity: 0;
+    transform: translate(45%, 28%) rotate(10deg);
+    will-change: transform, opacity;
+}
+
+.cardImageContainer.coveredImage::before {
+    background:
+        linear-gradient(115deg, transparent 18%, rgba(45, 226, 230, 0.32) 40%, rgba(255, 255, 255, 0.24) 48%, rgba(255, 51, 102, 0.22) 56%, transparent 78%);
+}
+
+.cardImageContainer img {
+    border-radius: inherit;
+}
+
+/*
+   Library hover border fix:
+   Web browsers happily rendered the original pseudo-element outline, but the
+   Windows desktop client only kept a faint highlight behind the poster. The
+   stable cross-client fix is to put the primary frame on the real .cardBox
+   border so the full hover outline survives desktop compositing.
+*/
+.card:hover .cardBox,
+.card:focus .cardBox,
+.card.show-focus .cardBox {
+    background: rgba(24, 29, 42, 0.45) !important;
+    border-color: rgba(45, 226, 230, 0.82);
+    box-shadow:
+        inset 0 0 0 1px rgba(45, 226, 230, 0.34),
+        0 1rem 2.1rem rgba(0, 0, 0, 0.5),
+        0 0 1rem rgba(45, 226, 230, 0.24),
+        0 0 0.55rem rgba(45, 226, 230, 0.22);
+    transform: translateY(-0.18rem);
+}
+
+.card:hover .cardImage,
+.card:focus .cardImage,
+.card.show-focus .cardImage {
+    filter: saturate(1.18) contrast(1.08) brightness(1.04);
+    transform: scale(1.035);
+}
+
+/*
+   Official Jellyfin Desktop is inconsistent with animated gloss
+   pseudo-elements. Multiple CSS-only fallback attempts also failed in the
+   Windows app, so this gloss should be treated as browser/Android-only there.
+   Keep the image-level sheen as a harmless fallback for clients that repaint it.
+*/
+.card:hover .cardImageContainer img,
+.card:focus .cardImageContainer img,
+.card.show-focus .cardImageContainer img {
+    filter: saturate(1.18) contrast(1.08) brightness(1.08);
+    box-shadow:
+        inset -2.2rem 1.55rem 2.8rem rgba(255, 255, 255, 0.12),
+        inset 1.2rem -0.95rem 1.9rem rgba(45, 226, 230, 0.1),
+        inset -1rem 0.8rem 1.6rem rgba(255, 51, 102, 0.08);
+    transform: scale(1.035);
+}
+
+.card:hover .cardImageContainer.coveredImage img,
+.card:focus .cardImageContainer.coveredImage img,
+.card.show-focus .cardImageContainer.coveredImage img {
+    filter: saturate(1.2) contrast(1.09) brightness(1.1);
+    box-shadow:
+        inset -2.6rem 1.85rem 3.2rem rgba(255, 255, 255, 0.15),
+        inset 1.45rem -1.15rem 2.2rem rgba(45, 226, 230, 0.13),
+        inset -1.15rem 0.95rem 1.8rem rgba(255, 51, 102, 0.1);
+}
+
+.card:hover .cardImageContainer::before,
+.card:focus .cardImageContainer::before,
+.card.show-focus .cardImageContainer::before {
+    animation: auroraCardSweep 2.1s var(--aurora-ease) infinite;
+}
+
+.card:hover .cardImageContainer.coveredImage::before,
+.card:focus .cardImageContainer.coveredImage::before,
+.card.show-focus .cardImageContainer.coveredImage::before {
+    animation-duration: 1.7s;
+}
+
+/*
+   With the main frame now living on .cardBox, this overlay should stay as a
+   soft poster tint only. If it draws its own border, browsers show a second
+   inner cyan/green frame around the thumbnail.
+*/
+.cardContent::after {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    z-index: 1;
+    pointer-events: none;
+    box-sizing: border-box;
+    border: 0 solid transparent;
+    border-radius: calc(var(--aurora-radius-md) - 1px);
+    background:
+        linear-gradient(180deg, transparent 52%, rgba(7, 8, 13, 0.34)),
+        linear-gradient(90deg, rgba(255, 51, 102, 0.11), transparent 36%, transparent 72%, rgba(45, 226, 230, 0.1));
+    opacity: 0;
+    transition: opacity 220ms var(--aurora-ease);
+}
+
+.card:hover .cardContent::after,
+.card:focus .cardContent::after,
+.card.show-focus .cardContent::after {
+    opacity: 0.48;
+}
+
+/*
+   Overlay-level pseudo-elements created a seam above the footer in browsers and
+   a clipped cyan fragment in the Windows desktop client. Leave this overlay
+   layer disabled and keep the actual frame on .cardBox.
+*/
+.cardOverlayContainer::before,
+.cardOverlayContainer::after {
+    content: none;
+}
+
+.cardOverlayContainer > .cardOverlayButton-br.flex,
+.cardScalable > .cardOverlayButton-br.flex {
+	right: 0.12rem;
+	bottom: 0.12rem;
+	z-index: 3;
+	align-items: center;
+	gap: 0.08rem;
+	padding: 0;
+	border: 0;
+	position: absolute;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+.cardOverlayContainer > .cardOverlayButton-br.flex::before,
+.cardScalable > .cardOverlayButton-br.flex::before {
+	content: none;
+}
+
+.cardOverlayContainer > .cardOverlayButton-br.flex::after,
+.cardScalable > .cardOverlayButton-br.flex::after {
+	content: none;
+}
+
+.cardOverlayContainer > .cardOverlayButton-br.flex .cardOverlayButton,
+.cardScalable > .cardOverlayButton-br.flex .cardOverlayButton {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 2.1rem;
+	min-height: 2.1rem;
+	padding: 0.24rem;
+	margin: 0;
+	border-radius: 999px !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	color: rgba(245, 247, 251, 0.92) !important;
+	text-shadow: 0 0.15rem 0.45rem rgba(0, 0, 0, 0.85);
+}
+
+.cardOverlayContainer > .cardOverlayButton-br.flex .cardOverlayButton .cardOverlayButtonIcon,
+.cardScalable > .cardOverlayButton-br.flex .cardOverlayButton .cardOverlayButtonIcon {
+	min-width: auto;
+	min-height: auto;
+	padding: 0.08rem;
+	border-radius: 0;
+	background: transparent !important;
+	box-shadow: none !important;
+	text-shadow:
+		0 0 0.42rem rgba(0, 0, 0, 0.92),
+		0 0 0.92rem rgba(0, 0, 0, 0.62),
+		0 0.1rem 0.34rem rgba(0, 0, 0, 0.72);
+	filter: drop-shadow(0 0 0.34rem rgba(0, 0, 0, 0.9));
+}
+
+.cardOverlayContainer > .cardOverlayButton-br.flex [is="emby-ratingbutton"] .cardOverlayButtonIcon.favorite,
+.cardScalable > .cardOverlayButton-br.flex [is="emby-ratingbutton"] .cardOverlayButtonIcon.favorite {
+	transition:
+		color 160ms var(--aurora-ease),
+		text-shadow 160ms var(--aurora-ease),
+		filter 160ms var(--aurora-ease),
+		transform 160ms var(--aurora-ease);
+	transform-origin: center;
+}
+
+.cardOverlayContainer > .cardOverlayButton-br.flex [is="emby-playstatebutton"] .cardOverlayButtonIcon.check,
+.cardScalable > .cardOverlayButton-br.flex [is="emby-playstatebutton"] .cardOverlayButtonIcon.check {
+	transition:
+		color 160ms var(--aurora-ease),
+		text-shadow 160ms var(--aurora-ease),
+		filter 160ms var(--aurora-ease),
+		transform 160ms var(--aurora-ease);
+	transform-origin: center;
+}
+
+.cardOverlayContainer > .cardOverlayButton-br.flex [is="emby-playstatebutton"]:hover .cardOverlayButtonIcon.check,
+.cardOverlayContainer > .cardOverlayButton-br.flex [is="emby-playstatebutton"]:focus .cardOverlayButtonIcon.check,
+.cardOverlayContainer > .cardOverlayButton-br.flex [is="emby-playstatebutton"].show-focus .cardOverlayButtonIcon.check,
+.cardScalable > .cardOverlayButton-br.flex [is="emby-playstatebutton"]:hover .cardOverlayButtonIcon.check,
+.cardScalable > .cardOverlayButton-br.flex [is="emby-playstatebutton"]:focus .cardOverlayButtonIcon.check,
+.cardScalable > .cardOverlayButton-br.flex [is="emby-playstatebutton"].show-focus .cardOverlayButtonIcon.check {
+	animation: auroraPlayedPulse 500ms var(--aurora-ease) 1;
+}
+
+.cardOverlayContainer > .cardOverlayButton-br.flex [is="emby-ratingbutton"]:hover .cardOverlayButtonIcon.favorite,
+.cardOverlayContainer > .cardOverlayButton-br.flex [is="emby-ratingbutton"]:focus .cardOverlayButtonIcon.favorite,
+.cardOverlayContainer > .cardOverlayButton-br.flex [is="emby-ratingbutton"].show-focus .cardOverlayButtonIcon.favorite,
+.cardScalable > .cardOverlayButton-br.flex [is="emby-ratingbutton"]:hover .cardOverlayButtonIcon.favorite,
+.cardScalable > .cardOverlayButton-br.flex [is="emby-ratingbutton"]:focus .cardOverlayButtonIcon.favorite,
+.cardScalable > .cardOverlayButton-br.flex [is="emby-ratingbutton"].show-focus .cardOverlayButtonIcon.favorite {
+	animation: auroraFavoriteHeartbeat 520ms var(--aurora-ease) 1;
+}
+
+.cardOverlayButton[data-action="play"],
+.cardOverlayButton[data-action="resume"] {
+    color: var(--aurora-text) !important;
+    background:
+        radial-gradient(circle at 50% 45%, rgba(16, 22, 32, 0.94), rgba(4, 6, 10, 0.82)) !important;
+    border: 1px solid rgba(245, 247, 251, 0.22) !important;
+    border-radius: 999px !important;
+    box-shadow:
+        0 0.4rem 1rem rgba(0, 0, 0, 0.48),
+        inset 0 0 0 1px rgba(45, 226, 230, 0.14);
+    animation: auroraPlayButtonSpinOut 1.6s var(--aurora-ease) both;
+    transition:
+        background 180ms var(--aurora-ease),
+        border-color 180ms var(--aurora-ease),
+        box-shadow 180ms var(--aurora-ease),
+        color 180ms var(--aurora-ease),
+        filter 180ms var(--aurora-ease);
+}
+
+.cardOverlayButton[data-action="play"] .cardOverlayButtonIcon,
+.cardOverlayButton[data-action="resume"] .cardOverlayButtonIcon,
+.cardOverlayButton[data-action="play"] .MuiSvgIcon-root,
+.cardOverlayButton[data-action="resume"] .MuiSvgIcon-root {
+    color: var(--aurora-text) !important;
+    background:
+        radial-gradient(circle at 50% 45%, rgba(20, 25, 36, 0.98), rgba(5, 7, 12, 0.92)) !important;
+    border: 1px solid rgba(245, 247, 251, 0.48);
+    border-radius: 999px;
+    box-shadow:
+        0 0.45rem 1rem rgba(0, 0, 0, 0.58),
+        inset 0 0 0 1px rgba(45, 226, 230, 0.2);
+    box-sizing: border-box;
+    min-height: 1.5em;
+    min-width: 1.5em;
+    padding: 0.12em;
+    text-shadow: 0 0 0.5rem rgba(255, 255, 255, 0.42);
+    transition:
+        background 180ms var(--aurora-ease),
+        border-color 180ms var(--aurora-ease),
+        box-shadow 180ms var(--aurora-ease),
+        color 180ms var(--aurora-ease),
+        transform 180ms var(--aurora-ease);
+}
+
+.cardOverlayButton[data-action="play"]:hover,
+.cardOverlayButton[data-action="play"]:focus,
+.cardOverlayButton[data-action="play"].show-focus,
+.cardOverlayButton[data-action="resume"]:hover,
+.cardOverlayButton[data-action="resume"]:focus,
+.cardOverlayButton[data-action="resume"].show-focus {
+    animation: auroraPlayButtonSpinIn 1.6s var(--aurora-ease) both;
+    color: #fff !important;
+    background:
+        radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.16), rgba(9, 16, 22, 0.98) 48%, rgba(3, 5, 9, 0.96)) !important;
+    border-color: rgba(255, 255, 255, 0.78) !important;
+    box-shadow:
+        0 0 0 2px rgba(7, 8, 13, 0.86),
+        0 0 0 4px rgba(255, 255, 255, 0.18),
+        0 0.75rem 1.25rem rgba(0, 0, 0, 0.55),
+        0 0 1.15rem rgba(45, 226, 230, 0.52),
+        0 0 1.8rem rgba(255, 51, 102, 0.28);
+    filter: saturate(1.1);
+}
+
+.cardOverlayButton[data-action="play"]:hover .cardOverlayButtonIcon,
+.cardOverlayButton[data-action="play"]:focus .cardOverlayButtonIcon,
+.cardOverlayButton[data-action="play"].show-focus .cardOverlayButtonIcon,
+.cardOverlayButton[data-action="resume"]:hover .cardOverlayButtonIcon,
+.cardOverlayButton[data-action="resume"]:focus .cardOverlayButtonIcon,
+.cardOverlayButton[data-action="resume"].show-focus .cardOverlayButtonIcon,
+.cardOverlayButton[data-action="play"]:hover .MuiSvgIcon-root,
+.cardOverlayButton[data-action="play"]:focus .MuiSvgIcon-root,
+.cardOverlayButton[data-action="play"].show-focus .MuiSvgIcon-root,
+.cardOverlayButton[data-action="resume"]:hover .MuiSvgIcon-root,
+.cardOverlayButton[data-action="resume"]:focus .MuiSvgIcon-root,
+.cardOverlayButton[data-action="resume"].show-focus .MuiSvgIcon-root {
+    color: #fff !important;
+    background:
+        radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.22), rgba(7, 16, 21, 0.98) 42%, rgba(5, 7, 12, 0.96)) !important;
+    border-color: rgba(255, 255, 255, 0.9);
+    box-shadow:
+        0 0 0 2px rgba(7, 8, 13, 0.82),
+        0 0 0 4px rgba(255, 255, 255, 0.22),
+        0 0 1rem rgba(45, 226, 230, 0.52),
+        0 0 1.65rem rgba(255, 51, 102, 0.34),
+        inset 0 0 0.9rem rgba(45, 226, 230, 0.16);
+    transform: scale(1.06) !important;
+}
+
+.cardText,
+.listItemBodyText {
+    color: var(--aurora-text) !important;
+}
+
+.cardText-first {
+    padding-top: .24em;
+    padding-bottom: .24em;
+}
+
+.cardText-secondary,
+.secondaryText,
+.fieldDescription,
+.listItem .secondary,
+.nowPlayingBarSecondaryText,
+.programSecondaryTitle {
+    color: var(--aurora-text-muted) !important;
+}
+
+.defaultCardBackground1 {
+    background: linear-gradient(145deg, #2de2e6, #2039ff) !important;
+}
+
+.defaultCardBackground2 {
+    background: linear-gradient(145deg, #ff3366, #8c6cff) !important;
+}
+
+.defaultCardBackground3 {
+    background: linear-gradient(145deg, #51f6a5, #087f8c) !important;
+}
+
+.defaultCardBackground4 {
+    background: linear-gradient(145deg, #ffcf5a, #ff6b35) !important;
+}
+
+.defaultCardBackground5 {
+    background: linear-gradient(145deg, #8c6cff, #2de2e6) !important;
+}
+
+.mediaSourceIndicator,
+.countIndicator,
+.playedIndicator {
+    color: #071015 !important;
+    background: linear-gradient(135deg, var(--aurora-cyan), var(--aurora-green)) !important;
+    box-shadow: var(--aurora-glow-cyan);
+}
+
+/* ==========================================================================
+   Lists, tables, and selected states
+   ========================================================================== */
+
+.listItem {
+    border-radius: var(--aurora-radius-md);
+    color: var(--aurora-text) !important;
+    transition:
+        background 160ms var(--aurora-ease),
+        box-shadow 160ms var(--aurora-ease),
+        transform 160ms var(--aurora-ease);
+}
+
+.listItem:hover,
+.listItem:focus {
+    background: rgba(45, 226, 230, 0.1) !important;
+    box-shadow: inset 0.2rem 0 0 var(--aurora-cyan);
+    transform: translateX(0.12rem);
+}
+
+.listItem-border {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.detailTableBodyRow-shaded:nth-child(even),
+.paperList {
+    background: rgba(255, 255, 255, 0.035) !important;
+}
+
+.itemSelectionPanel {
+    border-color: var(--aurora-cyan) !important;
+    box-shadow: var(--aurora-glow-cyan);
+}
+
+.selectionCommandsPanel {
+    color: #071015 !important;
+    background: linear-gradient(90deg, var(--aurora-cyan), var(--aurora-green)) !important;
+}
+
+/* ==========================================================================
+   Buttons, forms, and controls
+   ========================================================================== */
+
+.button-submit,
+.raised,
+.fab,
+button[type="submit"],
+.MuiButton-containedPrimary {
+    color: #071015 !important;
+    background: linear-gradient(90deg, var(--aurora-cyan), var(--aurora-green)) !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    box-shadow: 0 0.5rem 1.2rem rgba(45, 226, 230, 0.2);
+    transition:
+        box-shadow 180ms var(--aurora-ease),
+        filter 180ms var(--aurora-ease),
+        transform 180ms var(--aurora-ease);
+}
+
+.button-submit:hover,
+.raised:hover,
+.fab:hover,
+button[type="submit"]:hover,
+.MuiButton-containedPrimary:hover {
+    filter: brightness(1.08) saturate(1.08);
+    box-shadow: var(--aurora-glow-cyan), 0 0.9rem 1.6rem rgba(0, 0, 0, 0.34);
+    transform: translateY(-1px);
+}
+
+.button-delete,
+.MuiButton-colorError {
+    color: #fff !important;
+    background: linear-gradient(90deg, var(--aurora-danger), var(--aurora-red)) !important;
+    border-radius: 999px !important;
+}
+
+input,
+textarea,
+select,
+.emby-input,
+.emby-textarea,
+.emby-select,
+.MuiInputBase-root {
+    color: var(--aurora-text) !important;
+    background: rgba(8, 10, 16, 0.72) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    border-radius: var(--aurora-radius-md) !important;
+}
+
+/*
+   MUI filled text fields render a wrapper plus an inner native input/select.
+   The generic input rule above should not paint that inner control or the
+   dashboard fields end up with a second box layered under the floating label.
+*/
+.dashboardDocument .MuiInputBase-input,
+.dashboardDocument .MuiSelect-select,
+.dashboardDocument .MuiSelect-nativeInput {
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.dashboardDocument .MuiFilledInput-root {
+    background: rgba(8, 10, 16, 0.72) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: var(--aurora-radius-md) !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+.dashboardDocument .MuiFilledInput-root::before,
+.dashboardDocument .MuiFilledInput-root::after {
+    border-bottom: 0 !important;
+}
+
+.dashboardDocument .MuiInputLabel-root.MuiInputLabel-filled {
+    z-index: 1;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.emby-input:focus,
+.emby-textarea:focus,
+.emby-select:focus,
+.Mui-focused {
+    border-color: var(--aurora-cyan) !important;
+    box-shadow: var(--aurora-glow-cyan);
+    outline: none !important;
+}
+
+.inputLabelFocused,
+.selectLabelFocused,
+.textareaLabelFocused,
+.MuiInputLabel-root.Mui-focused {
+    color: var(--aurora-cyan) !important;
+}
+
+.checkboxOutline,
+.radioOutline {
+    border-color: rgba(245, 247, 251, 0.55) !important;
+}
+
+.checkboxIcon,
+.radioIcon {
+    color: var(--aurora-cyan) !important;
+}
+
+progress,
+progress::-webkit-progress-bar {
+    background: rgba(245, 247, 251, 0.12) !important;
+    border-radius: 999px !important;
+}
+
+progress::-webkit-progress-value,
+progress::-moz-progress-bar,
+progress[aria-valuenow]::before,
+.progressring-spiner {
+    background-color: var(--aurora-cyan) !important;
+    border-color: var(--aurora-cyan) !important;
+}
+
+/* ==========================================================================
+   Dialogs, drawers, menus, and toasts
+   ========================================================================== */
+
+.dialog,
+.formDialogHeader:not(.formDialogHeader-clear),
+.formDialogFooter:not(.formDialogFooter-clear),
+.collapseContent,
+.nowPlayingPlaylist,
+.nowPlayingContextMenu,
+.actionsheet,
+.toast,
+.MuiPaper-root {
+    color: var(--aurora-text) !important;
+    background:
+        linear-gradient(145deg, rgba(27, 33, 48, 0.96), rgba(10, 12, 18, 0.96)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--aurora-shadow-float);
+}
+
+.dialog,
+.actionsheet,
+.MuiPaper-root {
+    border-radius: var(--aurora-radius-lg) !important;
+}
+
+.drawerContent,
+.mainDrawer,
+.MuiDrawer-paper {
+    color: var(--aurora-text) !important;
+    background:
+        linear-gradient(180deg, rgba(12, 15, 23, 0.98), rgba(7, 8, 13, 0.98)) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.toast {
+    border-radius: 999px !important;
+    box-shadow: var(--aurora-glow-red), var(--aurora-shadow-card);
+}
+
+.actionsheetDivider {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ==========================================================================
+   Details and now playing
+   ========================================================================== */
+
+/*
+   Detail-page notes from testing against Jellyfin Web 10.11.11:
+   - The mock app and production both use the upstream 10.11.11 detail DOM.
+   - Production branding CSS must be repasted after this file changes; stale
+     branding CSS caused several "fixed locally but not production" false reads.
+   - Keep layout fixes in this standalone theme file. Do not alter upstream
+     Jellyfin markup or official-sources for theme-only regressions.
+*/
+
+.detailRibbon {
+    background: linear-gradient(90deg, rgba(7, 8, 13, 0.92), rgb(85 101 160 / 75%), rgba(7, 8, 13, 0.4)) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px) saturate(145%);
+}
+
+.detailPagePrimaryContainer,
+.detailPageSecondaryContainer {
+    color: var(--aurora-text) !important;
+}
+
+/*
+   Poster hover border fix:
+   Early versions scaled/dimmed the detail poster on hover, which clipped the
+   cyan left border and let the dark card overlay reduce border brightness.
+   Detail posters now avoid hover transforms and suppress the card overlay; the
+   border lives on .cardBox::after so it stays above the artwork.
+*/
+.detailImageContainer .card:hover .cardBox,
+.detailImageContainer .card:focus .cardBox,
+.detailImageContainer .card.show-focus .cardBox {
+    transform: none;
+}
+
+.detailImageContainer .card:hover .cardImage,
+.detailImageContainer .card:focus .cardImage,
+.detailImageContainer .card.show-focus .cardImage {
+    transform: none;
+}
+
+.detailImageContainer .cardContent::after {
+    opacity: 0 !important;
+}
+
+.detailImageContainer .cardBox::after {
+    border-color: rgba(45, 226, 230, 0.62);
+    box-shadow:
+        inset 0 0 0 1px rgba(45, 226, 230, 0.5),
+        0 0 0.7rem rgba(45, 226, 230, 0.22);
+}
+
+/*
+   Manual detail-poster choice: portrait detail cards intentionally suppress the
+   generic .cardBox::after border/glow. This makes the earlier generic border
+   declarations effectively unreachable for portrait detail posters, but keeps
+   non-portrait/detail-adjacent cards eligible for the base styling.
+*/
+.detailImageContainer .card.portraitCard .cardBox::after,
+.detailImageContainer .card.portraitCard:hover .cardBox::after,
+.detailImageContainer .card.portraitCard:focus .cardBox::after,
+.detailImageContainer .card.portraitCard.show-focus .cardBox::after {
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+.itemDetailPage .detailRibbon {
+    gap: 0.9rem;
+}
+
+.itemDetailPage .infoWrapper {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.itemDetailPage .nameContainer {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.itemDetailPage .mainDetailButtons {
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    gap: 0.28rem;
+    min-width: 0;
+}
+
+.itemDetailPage .detailButton {
+    min-width: 2.5rem;
+    margin-left: 0.12rem !important;
+    margin-right: 0.12rem !important;
+}
+
+.itemDetailPage .detailButton .detailButton-icon {
+    color: rgba(245, 247, 251, 0.92);
+    text-shadow:
+        0 0 0.42rem rgba(0, 0, 0, 0.92),
+        0 0 0.92rem rgba(0, 0, 0, 0.62),
+        0 0.1rem 0.34rem rgba(0, 0, 0, 0.72);
+    filter: drop-shadow(0 0 0.34rem rgba(0, 0, 0, 0.9));
+    transition:
+        color 160ms var(--aurora-ease),
+        text-shadow 160ms var(--aurora-ease),
+        filter 160ms var(--aurora-ease),
+        transform 160ms var(--aurora-ease);
+    transform-origin: center;
+}
+
+.itemDetailPage .detailButton .detailButton-icon.favorite.ratingbutton-icon-withrating,
+.itemDetailPage .detailButton .detailButton-icon.check.playstatebutton-icon-played {
+    color: rgba(245, 247, 251, 0.92);
+}
+
+.itemDetailPage .detailButton:not(.btnMoreCommands):not(.btnPlay):not(.btnReplay):not(.btnPlaystate):not(.btnUserRating):hover .detailButton-icon,
+.itemDetailPage .detailButton:not(.btnMoreCommands):not(.btnPlay):not(.btnReplay):not(.btnPlaystate):not(.btnUserRating):focus .detailButton-icon,
+.itemDetailPage .detailButton:not(.btnMoreCommands):not(.btnPlay):not(.btnReplay):not(.btnPlaystate):not(.btnUserRating).show-focus .detailButton-icon {
+    animation: auroraDetailActionPulse 420ms var(--aurora-ease) 1;
+}
+
+.itemDetailPage .detailButton.btnPlay .detailButton-icon.play_arrow,
+.itemDetailPage .detailButton.btnReplay .detailButton-icon.replay {
+    animation: auroraPlayButtonSpinOut 1.6s var(--aurora-ease) both;
+}
+
+.itemDetailPage .detailButton.btnPlay:hover .detailButton-icon.play_arrow,
+.itemDetailPage .detailButton.btnPlay:focus .detailButton-icon.play_arrow,
+.itemDetailPage .detailButton.btnPlay.show-focus .detailButton-icon.play_arrow,
+.itemDetailPage .detailButton.btnReplay:hover .detailButton-icon.replay,
+.itemDetailPage .detailButton.btnReplay:focus .detailButton-icon.replay,
+.itemDetailPage .detailButton.btnReplay.show-focus .detailButton-icon.replay {
+    animation: auroraPlayButtonSpinIn 1.6s var(--aurora-ease) both;
+}
+
+.itemDetailPage .detailButton.btnUserRating:hover .detailButton-icon.favorite,
+.itemDetailPage .detailButton.btnUserRating:focus .detailButton-icon.favorite,
+.itemDetailPage .detailButton.btnUserRating.show-focus .detailButton-icon.favorite {
+    animation: auroraFavoriteHeartbeat 520ms var(--aurora-ease) 1;
+}
+
+.itemDetailPage .detailButton.btnPlaystate:hover .detailButton-icon.check,
+.itemDetailPage .detailButton.btnPlaystate:focus .detailButton-icon.check,
+.itemDetailPage .detailButton.btnPlaystate.show-focus .detailButton-icon.check {
+    animation: auroraPlayedPulse 500ms var(--aurora-ease) 1;
+}
+
+/*
+   Keep metadata compact, but allow the primary detail title to wrap on every
+   layout so long names do not end in ellipsis.
+*/
+.itemDetailPage .itemMiscInfo,
+.itemDetailPage .infoText:not(.itemName) {
+    max-width: 100%;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.itemDetailPage .itemName {
+    max-width: 100%;
+    min-width: 0;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    overflow-wrap: break-word;
+}
+
+.itemDetailPage .itemName.originalTitle {
+    display: none !important;
+}
+
+/*
+   Desktop detail ribbon strategy:
+   Jellyfin 10.11.11 floats the poster and also gives the ribbon a 32.45vw
+   poster gutter. Because the float can squeeze the ribbon box, a normal
+   width:auto ribbon appeared to stop short on the left. The theme makes the
+   ribbon itself 100vw, then keeps the upstream poster-aware padding inside it.
+   A previous attempt used flex-wrap/height:auto below 70em; that gave titles
+   more room, but it destabilized the poster/ribbon geometry and contributed to
+   the poster appearing to move down.
+*/
+.layout-desktop .itemDetailPage .detailRibbon {
+    display: flex;
+    position: relative;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100vw;
+    height: 7.2em;
+    overflow: visible;
+}
+
+.layout-desktop [dir="ltr"] .itemDetailPage .detailRibbon {
+    left: 0;
+    padding-left: 32.45vw !important;
+    padding-right: calc(2% + 17rem);
+}
+
+.layout-desktop [dir="rtl"] .itemDetailPage .detailRibbon {
+    right: 0;
+    padding-right: 32.45vw !important;
+    padding-left: calc(2% + 17rem);
+}
+
+/*
+   The visual ribbon background must span the full page as well. Keep this
+   pseudo-layer behind .infoWrapper and .mainDetailButtons, otherwise it can sit
+   on top of controls or fail to cover the area behind the floated poster.
+*/
+.layout-desktop .itemDetailPage .detailRibbon::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    bottom: -1px;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(7, 8, 13, 0.92), rgba(18, 21, 32, 0.75), rgba(7, 8, 13, 0.4));
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    z-index: 0;
+}
+
+.layout-desktop [dir="ltr"] .itemDetailPage .detailRibbon::before {
+    left: 0;
+    right: 0;
+}
+
+.layout-desktop [dir="rtl"] .itemDetailPage .detailRibbon::before {
+    left: 0;
+    right: 0;
+}
+
+.layout-desktop .itemDetailPage .infoWrapper {
+    flex: 1 1 100%;
+    width: 100%;
+    max-width: none;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.layout-desktop .itemDetailPage .nameContainer {
+    text-align: left;
+}
+
+/*
+.layout-desktop .itemDetailPage .itemMiscInfo {
+    justify-content: center;
+}
+*/
+
+/*
+   Keep actions separate from the title/meta column.
+   Grid columns and full-width absolute buttons both failed: the first squeezed
+   long titles, while the second made the action row measure as the full ribbon.
+   Inline-flex + fit-content pins only the icon strip to the right edge.
+*/
+.layout-desktop .itemDetailPage .mainDetailButtons {
+    display: inline-flex;
+    flex: none;
+    position: absolute;
+    top: 50%;
+    width: fit-content !important;
+    max-width: none;
+    z-index: 1;
+    justify-content: flex-end !important;
+    transform: translateY(-50%);
+}
+
+.layout-desktop [dir="ltr"] .itemDetailPage .mainDetailButtons {
+    left: auto !important;
+    right: 2%;
+}
+
+.layout-desktop [dir="rtl"] .itemDetailPage .mainDetailButtons {
+    right: auto !important;
+    left: 2%;
+}
+
+/*
+   The logo shown here is Jellyfin ImageType.Logo: usually transparent title
+   artwork, not a backdrop still. It is kept visible on wider desktop because
+   this theme currently follows Web's detail-logo model; do not confuse it with
+   the page/backdrop image rules near the top of the file.
+*/
+.detailLogo {
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 16vh;
+    position: absolute;
+    /* Keep the original desktop placement. */
+    top: min(7vw, 80.5px);
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: 25vw;
+    opacity: 1;
+    z-index: 2;
+    transition: opacity 1000ms var(--aurora-ease);
+}
+
+.detailLogo:hover {
+    opacity: 0;
+}
+
+/*
+   Android uses Jellyfin's mobile layout even on some wider devices, so keep
+   the logo override outside the desktop-width media query. The element already
+   sits before the detail wrapper in the DOM, which lets it overlay the backdrop
+   area without disturbing the stacked mobile metadata layout.
+*/
+.layout-mobile .detailLogo:not(.hide),
+.layout-mobile .itemDetailPage .detailLogo:not(.hide),
+.layout-mobile.detailLogo:not(.hide),
+.layout-mobile .page.itemDetailPage .detailLogo:not(.hide),
+.layout-mobile .mainAnimatedPage.itemDetailPage .detailLogo:not(.hide),
+.layout-mobile.selfBackdropPage .detailLogo:not(.hide),
+.layout-mobile .selfBackdropPage .detailLogo:not(.hide),
+.layout-mobile .libraryPage.itemDetailPage .detailLogo:not(.hide),
+.layout-mobile .itemDetailPage.mainAnimatedPage .detailLogo:not(.hide),
+.itemDetailPage.layout-mobile .detailLogo:not(.hide) {
+    display: block !important;
+    position: absolute !important;
+    /*
+       Android forces Jellyfin into mobile layout. Push the logo down to roughly
+       the upper-middle third of the 40vh backdrop without changing desktop.
+    */
+    top: 13vh !important;
+    left: 50% !important;
+    right: auto !important;
+    width: 11rem !important;
+    max-width: 52vw !important;
+    min-width: 7rem !important;
+    height: 4rem !important;
+    max-height: 11vw !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-size: contain !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: translateX(-50%) !important;
+    z-index: 3 !important;
+    transition: opacity 12800ms var(--aurora-ease) !important;
+}
+
+.layout-mobile .detailLogo:not(.hide):active,
+.layout-mobile .itemDetailPage .detailLogo:not(.hide):active,
+.layout-mobile .page.itemDetailPage .detailLogo:not(.hide):active,
+.layout-mobile .mainAnimatedPage.itemDetailPage .detailLogo:not(.hide):active,
+.layout-mobile .selfBackdropPage .detailLogo:not(.hide):active,
+.layout-mobile .libraryPage.itemDetailPage .detailLogo:not(.hide):active,
+.layout-mobile .itemDetailPage.mainAnimatedPage .detailLogo:not(.hide):active,
+.itemDetailPage.layout-mobile .detailLogo:not(.hide):active {
+    opacity: 0 !important;
+    transition-duration: 160ms !important;
+}
+
+.lazy-image-fadein-fast {
+    -webkit-animation: fadein 1s;
+    animation: fadein 1s;
+    opacity: 1;
+}
+
+@media all and (max-width: 70em) {
+    /*
+       Split-screen desktop: reserve enough right-side room for the button strip
+       while giving the title the empty center area. Tighten button gaps here
+       because production movie pages can show five or six detail actions.
+    */
+    .layout-desktop [dir="ltr"] .itemDetailPage .detailRibbon {
+        padding-right: calc(1rem + 14.75rem);
+    }
+
+    .layout-desktop [dir="rtl"] .itemDetailPage .detailRibbon {
+        padding-left: calc(1rem + 14.75rem);
+    }
+
+    .layout-desktop .itemDetailPage .mainDetailButtons {
+        gap: 0.08rem;
+    }
+
+    .layout-desktop [dir="ltr"] .itemDetailPage .mainDetailButtons {
+        right: 1rem;
+    }
+
+    .layout-desktop [dir="rtl"] .itemDetailPage .mainDetailButtons {
+        left: 1rem;
+    }
+
+    .layout-desktop .itemDetailPage .detailButton {
+        min-width: 2.25rem;
+		padding: 5px !important;
+    }
+}
+
+@media all and (max-width: 46em) {
+    /*
+       Narrow desktop fallback:
+       At the smallest screenshot width, keeping poster, title, metadata, and
+       actions in one row makes everything collide. Stack the ribbon content
+       below the poster instead; this keeps the poster above the ribbon and gives
+       the title a full row before the actions.
+
+       Note: later max-width: 46em blocks are more specific/manual and override
+       much of this fallback with !important declarations. This block remains as
+       the baseline for narrow desktop before those manual corrections layer on.
+    */
+    .layout-desktop .itemDetailPage .detailRibbon {
+        min-height: 7.2em;
+        justify-content: center;
+
+    }
+
+    .layout-desktop [dir="ltr"] .itemDetailPage .detailRibbon {
+        padding-left: 5% !important;
+        padding-right: 5%;
+    }
+
+    .layout-desktop [dir="rtl"] .itemDetailPage .detailRibbon {
+        padding-right: 5% !important;
+        padding-left: 5%;
+    }
+
+    .layout-desktop .itemDetailPage .infoWrapper {
+        width: 100%;
+    }
+
+    .layout-desktop .itemDetailPage .mainDetailButtons {
+        position: static;
+        align-self: flex-end;
+        transform: none;
+        margin-top: 0.25rem;
+    }
+
+    .layout-desktop [dir="ltr"] .itemDetailPage .mainDetailButtons {
+        right: auto;
+    }
+
+    .layout-desktop [dir="rtl"] .itemDetailPage .mainDetailButtons {
+        left: auto;
+    }
+
+    .layout-desktop .itemDetailPage .detailButton {
+        min-width: 1.9rem;
+        margin-left: 0.04rem !important;
+        margin-right: 0.04rem !important;
+    }
+}
+
+@media all and (max-width: 62.5em) {
+    /*
+       Upstream 10.11.11 changes desktop poster cards to top: 10% below 62.5em.
+       That is why the poster seemed to move down as width decreased. For this
+       theme, keep the normal desktop negative offset; true mobile layout is not
+       targeted by this desktop-scoped override.
+    */
+    .layout-desktop .itemDetailPage .detailImageContainer.hide-mobile .card {
+        top: -12.96em;
+        margin-bottom: -12.96em;
+    }
+}
+
+@media all and (max-width: 68.75em) {
+    /*
+       Upstream hides .detailLogo below 68.75em. Keep it visible longer on
+       desktop when an item actually has Logo art. CSS cannot create missing
+       logo assets for mock items without a logo image tag.
+    */
+    .layout-desktop .itemDetailPage .detailLogo:not(.hide) {
+        display: block;
+    }
+}
+
+@media all and (max-width: 46em) {
+    /* Hide the logo again once narrow desktop stacking starts. */
+    .layout-desktop .itemDetailPage .detailLogo {
+        display: none;
+    }
+}
+
+.mediaInfoText {
+    color: var(--aurora-text) !important;
+    background: rgba(45, 226, 230, 0.12) !important;
+    border: 1px solid rgba(45, 226, 230, 0.22);
+    border-radius: 999px;
+}
+
+.upNextDialog-countdownText {
+    color: var(--aurora-green) !important;
+    text-shadow: 0 0 1rem rgba(81, 246, 165, 0.4);
+}
+
+.nowPlayingBar,
+.appfooter {
+    color: var(--aurora-text) !important;
+    background: rgba(8, 10, 16, 0.9) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px) saturate(150%);
+    box-shadow: 0 -0.75rem 2rem rgba(0, 0, 0, 0.38);
+}
+
+.nowPlayingBar .nowPlayingImage {
+    border-radius: var(--aurora-radius-md);
+    box-shadow: var(--aurora-shadow-card);
+}
+
+.nowPlayingBarPositionSlider,
+.emby-slider {
+    accent-color: var(--aurora-cyan);
+}
+
+/* ==========================================================================
+   Dashboard and admin pages
+   ========================================================================== */
+
+.dashboardSection,
+.dashboardColumn,
+.MuiCard-root,
+.visualCardBox {
+    color: var(--aurora-text) !important;
+}
+
+.dashboardSection {
+    padding: 1rem;
+    border-radius: var(--aurora-radius-lg);
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.dashboardSection h3 {
+    color: var(--aurora-text) !important;
+}
+
+.MuiAlert-root {
+    border-radius: var(--aurora-radius-md) !important;
+}
+
+.MuiAlert-standardSuccess {
+    color: #071015 !important;
+    background: linear-gradient(90deg, rgba(81, 246, 165, 0.95), rgba(45, 226, 230, 0.88)) !important;
+}
+
+.MuiAlert-standardError {
+    color: #fff !important;
+    background: linear-gradient(90deg, rgba(255, 77, 95, 0.95), rgba(255, 51, 102, 0.88)) !important;
+}
+
+.textarea-mono {
+    color: var(--aurora-green) !important;
+    background:
+        linear-gradient(180deg, rgba(7, 8, 13, 0.94), rgba(12, 15, 23, 0.94)) !important;
+    border: 1px solid rgba(81, 246, 165, 0.22) !important;
+    box-shadow: inset 0 0 1.2rem rgba(0, 0, 0, 0.24);
+}
+
+/* ==========================================================================
+   Cinematic motion and effects
+   ========================================================================== */
+
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+body::before {
+    background:
+        linear-gradient(115deg, transparent 0%, rgba(45, 226, 230, 0.08) 24%, transparent 42%),
+        linear-gradient(245deg, transparent 18%, rgba(255, 51, 102, 0.075) 48%, transparent 70%),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.018) 0, rgba(255, 255, 255, 0.018) 1px, transparent 1px, transparent 7px);
+    opacity: 0.64;
+    mix-blend-mode: screen;
+    transform: translate3d(-4%, 0, 0);
+    animation: auroraAtmosphereDrift var(--aurora-motion-drift) ease-in-out infinite alternate;
+}
+
+body::after {
+    background:
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.026) 0, rgba(255, 255, 255, 0.026) 1px, transparent 1px, transparent 4px);
+    opacity: 0.09;
+    animation: auroraFilmGrain 950ms steps(2, end) infinite;
+}
+
+.skinHeader {
+    position: relative;
+}
+
+.skinHeader::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    pointer-events: none;
+    background-color: var(--aurora-red);
+    background-image: none !important;
+    opacity: 0.72;
+    animation: auroraSolidLineFade 12s ease-in-out infinite;
+    will-change: background-color;
+}
+
+.backdropContainer .backdropImage {
+    transform-origin: center top;
+    animation: auroraBackdropFloat 18s ease-in-out infinite alternate;
+}
+
+.sectionTitle::after {
+    background-color: var(--aurora-red);
+    background-image: none !important;
+    animation: auroraSolidLineFade 12s ease-in-out infinite;
+    will-change: background-color;
+}
+
+.emby-tab-button,
+.button-submit,
+.raised,
+.fab,
+button[type="submit"],
+.MuiButton-containedPrimary {
+    position: relative;
+    overflow: hidden;
+}
+
+.emby-tab-button::before,
+.button-submit::before,
+.raised::before,
+.fab::before,
+button[type="submit"]::before,
+.MuiButton-containedPrimary::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(100deg, transparent 18%, rgba(255, 255, 255, 0.34) 44%, transparent 68%);
+    opacity: 0;
+    transform: translateX(-120%);
+}
+
+.emby-tab-button:hover::before,
+.emby-tab-button:focus::before,
+.button-submit:hover::before,
+.button-submit:focus::before,
+.raised:hover::before,
+.raised:focus::before,
+.fab:hover::before,
+.fab:focus::before,
+button[type="submit"]:hover::before,
+button[type="submit"]:focus::before,
+.MuiButton-containedPrimary:hover::before,
+.MuiButton-containedPrimary:focus::before {
+    opacity: 0.7;
+    animation: auroraButtonSweep var(--aurora-motion-quick) var(--aurora-ease) 1;
+}
+
+.cardBox {
+    overflow: hidden;
+}
+
+/*
+   Windows desktop clients can bury .cardBox pseudo-elements under the image
+   layer. Keep the glass sweep on .cardImageContainer::before instead and keep
+   the visible hover frame on the real .cardBox border.
+*/
+.cardBox::before {
+    content: none;
+}
+
+.card:hover .cardText:first-child,
+.card:focus .cardText:first-child,
+.card.show-focus .cardText:first-child {
+    text-shadow: 0 0 0.65rem rgba(45, 226, 230, 0.38);
+}
+
+.listItem {
+    position: relative;
+    overflow: hidden;
+}
+
+.listItem::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0.24rem;
+    pointer-events: none;
+    background: linear-gradient(180deg, var(--aurora-cyan), var(--aurora-red), var(--aurora-green));
+    opacity: 0;
+    transform: scaleY(0.36);
+    transform-origin: center;
+    transition:
+        opacity 180ms var(--aurora-ease),
+        transform 220ms var(--aurora-ease);
+}
+
+.listItem:hover::before,
+.listItem:focus::before {
+    opacity: 1;
+    transform: scaleY(1);
+}
+
+.dashboardSection,
+.paperList,
+.dialog,
+.actionsheet {
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboardSection::before,
+.paperList::before,
+.dialog::before,
+.actionsheet::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background:
+        linear-gradient(135deg, rgba(45, 226, 230, 0.16), transparent 34%, transparent 68%, rgba(255, 51, 102, 0.14));
+    opacity: 0.28;
+    transition: opacity 220ms var(--aurora-ease);
+}
+
+.dashboardSection:hover::before,
+.paperList:hover::before,
+.dialog:hover::before,
+.actionsheet:hover::before {
+    opacity: 0.56;
+}
+
+/* Keep the dashboard navigation drawer from clipping its animated MUI children. */
+.mainDrawer,
+.drawerContent,
+.MuiDrawer-paper,
+.MuiDrawer-paper.MuiPaper-root {
+    overflow: visible !important;
+}
+
+.nowPlayingBar,
+.appfooter {
+    position: relative;
+    overflow: hidden;
+}
+
+.nowPlayingBar::before,
+.appfooter::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, transparent, rgba(45, 226, 230, 0.13), rgba(255, 51, 102, 0.09), transparent);
+    background-size: 220% 100%;
+    opacity: 0.8;
+    animation: auroraNowPlayingFlow 8s linear infinite;
+}
+
+@keyframes auroraAtmosphereDrift {
+    0% {
+        transform: translate3d(-4%, 0, 0) skewX(-2deg);
+    }
+
+    50% {
+        transform: translate3d(3%, -1.5%, 0) skewX(1deg);
+    }
+
+    100% {
+        transform: translate3d(6%, 1%, 0) skewX(2deg);
+    }
+}
+
+@keyframes auroraFilmGrain {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+
+    50% {
+        transform: translate3d(-1%, 1%, 0);
+    }
+
+    100% {
+        transform: translate3d(1%, -1%, 0);
+    }
+}
+
+@keyframes auroraBackdropFloat {
+    0% {
+        filter: saturate(1.04) contrast(1.02);
+        transform: scale(1.01) translate3d(0, 0, 0);
+    }
+
+    100% {
+        filter: saturate(1.14) contrast(1.06);
+        transform: scale(1.045) translate3d(0, -1.1%, 0);
+    }
+}
+
+@keyframes auroraSolidLineFade {
+    0%,
+    100% {
+        background-color: var(--aurora-red);
+    }
+
+    33% {
+        background-color: var(--aurora-purple);
+    }
+
+    66% {
+        background-color: var(--aurora-cyan);
+    }
+}
+
+@keyframes auroraButtonSweep {
+    0% {
+        transform: translateX(-120%);
+    }
+
+    100% {
+        transform: translateX(120%);
+    }
+}
+
+@keyframes auroraPlayButtonSpinIn {
+    0% {
+        transform: translateY(0) scale(1) rotate(0turn);
+    }
+
+    100% {
+        transform: translateY(-1px) scale(1.08) rotate(1turn);
+    }
+}
+
+@keyframes auroraPlayButtonSpinOut {
+    0% {
+        transform: translateY(-1px) scale(1.08) rotate(1turn);
+    }
+
+    100% {
+        transform: translateY(0) scale(1) rotate(0turn);
+    }
+}
+
+@keyframes auroraCardSweep {
+    0% {
+        opacity: 0;
+        transform: translate(48%, 30%) rotate(10deg);
+    }
+
+    22% {
+        opacity: 0.7;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-48%, -30%) rotate(10deg);
+    }
+}
+
+@keyframes auroraNowPlayingFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 220% 50%;
+    }
+}
+
+@keyframes auroraFavoriteHeartbeat {
+    0% {
+        color: rgba(245, 247, 251, 0.92);
+        transform: scale(1);
+        text-shadow:
+            0 0 0.42rem rgba(0, 0, 0, 0.92),
+            0 0 0.92rem rgba(0, 0, 0, 0.62),
+            0 0.1rem 0.34rem rgba(0, 0, 0, 0.72);
+        filter: drop-shadow(0 0 0.34rem rgba(0, 0, 0, 0.9));
+    }
+
+    24% {
+        color: #ff4d5f;
+        transform: scale(1.18);
+        text-shadow:
+            0 0 0.35rem rgba(255, 77, 95, 0.76),
+            0 0 0.8rem rgba(255, 51, 102, 0.54),
+            0 0.08rem 0.22rem rgba(0, 0, 0, 0.52);
+        filter:
+            drop-shadow(0 0 0.28rem rgba(255, 77, 95, 0.64))
+            drop-shadow(0 0 0.18rem rgba(0, 0, 0, 0.62));
+    }
+
+    52% {
+        color: #ff3347;
+        transform: scale(0.96);
+        text-shadow:
+            0 0 0.32rem rgba(255, 77, 95, 0.82),
+            0 0 0.68rem rgba(255, 51, 102, 0.5),
+            0 0.08rem 0.2rem rgba(0, 0, 0, 0.46);
+        filter:
+            drop-shadow(0 0 0.24rem rgba(255, 77, 95, 0.54))
+            drop-shadow(0 0 0.16rem rgba(0, 0, 0, 0.56));
+    }
+
+    100% {
+        color: rgba(245, 247, 251, 0.92);
+        transform: scale(1);
+        text-shadow:
+            0 0 0.42rem rgba(0, 0, 0, 0.92),
+            0 0 0.92rem rgba(0, 0, 0, 0.62),
+            0 0.1rem 0.34rem rgba(0, 0, 0, 0.72);
+        filter: drop-shadow(0 0 0.34rem rgba(0, 0, 0, 0.9));
+    }
+}
+
+@keyframes auroraPlayedPulse {
+    0% {
+        color: rgba(245, 247, 251, 0.92);
+        transform: scale(1);
+        text-shadow:
+            0 0 0.42rem rgba(0, 0, 0, 0.92),
+            0 0 0.92rem rgba(0, 0, 0, 0.62),
+            0 0.1rem 0.34rem rgba(0, 0, 0, 0.72);
+        filter: drop-shadow(0 0 0.34rem rgba(0, 0, 0, 0.9));
+    }
+
+    22% {
+        color: #51f6a5;
+        transform: scale(1.16);
+        text-shadow:
+            0 0 0.34rem rgba(81, 246, 165, 0.76),
+            0 0 0.8rem rgba(81, 246, 165, 0.5),
+            0 0.08rem 0.22rem rgba(0, 0, 0, 0.5);
+        filter:
+            drop-shadow(0 0 0.26rem rgba(81, 246, 165, 0.62))
+            drop-shadow(0 0 0.16rem rgba(0, 0, 0, 0.6));
+    }
+
+    50% {
+        color: #2fdc83;
+        transform: scale(0.97);
+        text-shadow:
+            0 0 0.3rem rgba(47, 220, 131, 0.78),
+            0 0 0.62rem rgba(81, 246, 165, 0.46),
+            0 0.08rem 0.18rem rgba(0, 0, 0, 0.42);
+        filter:
+            drop-shadow(0 0 0.22rem rgba(47, 220, 131, 0.5))
+            drop-shadow(0 0 0.14rem rgba(0, 0, 0, 0.54));
+    }
+
+    100% {
+        color: rgba(245, 247, 251, 0.92);
+        transform: scale(1);
+        text-shadow:
+            0 0 0.42rem rgba(0, 0, 0, 0.92),
+            0 0 0.92rem rgba(0, 0, 0, 0.62),
+            0 0.1rem 0.34rem rgba(0, 0, 0, 0.72);
+        filter: drop-shadow(0 0 0.34rem rgba(0, 0, 0, 0.9));
+    }
+}
+
+@keyframes auroraDetailActionPulse {
+    0% {
+        color: rgba(245, 247, 251, 0.92);
+        transform: scale(1);
+        text-shadow:
+            0 0 0.42rem rgba(0, 0, 0, 0.92),
+            0 0 0.92rem rgba(0, 0, 0, 0.62),
+            0 0.1rem 0.34rem rgba(0, 0, 0, 0.72);
+        filter: drop-shadow(0 0 0.34rem rgba(0, 0, 0, 0.9));
+    }
+
+    26% {
+        color: #9cf8ff;
+        transform: scale(1.14);
+        text-shadow:
+            0 0 0.34rem rgba(45, 226, 230, 0.72),
+            0 0 0.82rem rgba(140, 108, 255, 0.28),
+            0 0.08rem 0.22rem rgba(0, 0, 0, 0.48);
+        filter:
+            drop-shadow(0 0 0.26rem rgba(45, 226, 230, 0.56))
+            drop-shadow(0 0 0.16rem rgba(0, 0, 0, 0.58));
+    }
+
+    56% {
+        color: #2de2e6;
+        transform: scale(0.98);
+        text-shadow:
+            0 0 0.28rem rgba(45, 226, 230, 0.74),
+            0 0 0.62rem rgba(45, 226, 230, 0.38),
+            0 0.08rem 0.18rem rgba(0, 0, 0, 0.42);
+        filter:
+            drop-shadow(0 0 0.22rem rgba(45, 226, 230, 0.42))
+            drop-shadow(0 0 0.14rem rgba(0, 0, 0, 0.52));
+    }
+
+    100% {
+        color: rgba(245, 247, 251, 0.92);
+        transform: scale(1);
+        text-shadow:
+            0 0 0.42rem rgba(0, 0, 0, 0.92),
+            0 0 0.92rem rgba(0, 0, 0, 0.62),
+            0 0.1rem 0.34rem rgba(0, 0, 0, 0.72);
+        filter: drop-shadow(0 0 0.34rem rgba(0, 0, 0, 0.9));
+    }
+}
+
+/* ==========================================================================
+   Motion and accessibility
+   ========================================================================== */
+
+@keyframes auroraPulse {
+    0% {
+        box-shadow: 0 0 0 rgba(45, 226, 230, 0);
+    }
+
+    50% {
+        box-shadow: 0 0 1.4rem rgba(45, 226, 230, 0.32);
+    }
+
+    100% {
+        box-shadow: 0 0 0 rgba(45, 226, 230, 0);
+    }
+}
+
+.card.show-focus .cardBox,
+.paper-icon-button-light.show-focus:focus,
+.emby-tab-button:focus,
+.button-submit:focus {
+    animation: auroraPulse 1.4s ease-in-out infinite;
+}
+
+*:focus-visible {
+    outline: 2px solid var(--aurora-cyan) !important;
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.001ms !important;
+    }
+}
+
+@media (max-width: 50em) {
+    .card:hover .cardBox,
+    .card:focus .cardBox,
+    .card.show-focus .cardBox {
+        transform: translateY(-0.12rem);
+    }
+
+    /*
+       Responsive dashboard override. This intentionally duplicates the base
+       .dashboardSection padding/radius above, but only below 50em. It is not
+       unreachable; it narrows the admin card chrome for smaller screens.
+    */
+    .dashboardSection {
+        padding: 0.75rem;
+        border-radius: var(--aurora-radius-md);
+    }
+}
+
+/* Narrow desktop detail layout:
+   - ribbon stays directly under the backdrop
+   - poster is removed from layout flow and visually placed lower
+   - title/meta/buttons use the space to the right of the poster
+
+   This is the authoritative manual narrow-desktop layout. It deliberately
+   duplicates selectors from the earlier max-width: 46em fallback and wins with
+   later source order plus !important declarations.
+*/
+@media all and (max-width: 46em) {
+    .layout-desktop .itemDetailPage {
+        --detail-ribbon-height: 8.75em;
+        --detail-poster-width: clamp(13rem, 30vw, 16rem);
+        --detail-poster-left: 4%;
+        --detail-poster-top: 17.5rem;
+        --detail-title-left: calc(var(--detail-poster-left) + var(--detail-poster-width) + 1.25rem);
+    }
+
+    .layout-desktop .itemDetailPage .detailPagePrimaryContainer {
+        position: relative !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    .layout-desktop .itemDetailPage .detailImageContainer.hide-mobile {
+        position: absolute !important;
+        top: var(--detail-poster-top) !important;
+        left: var(--detail-poster-left) !important;
+        width: var(--detail-poster-width) !important;
+        z-index: 4 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        pointer-events: auto !important;
+    }
+
+    .layout-desktop .itemDetailPage .detailImageContainer.hide-mobile .card {
+        top: -21.96em !important;
+        margin: 0 !important;
+        transform: none !important;
+        width: 100% !important;
+    }
+
+    .layout-desktop .itemDetailPage .detailRibbon {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-template-rows: auto auto !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        box-sizing: border-box !important;
+        width: 100vw !important;
+        height: var(--detail-ribbon-height) !important;
+        min-height: var(--detail-ribbon-height) !important;
+        margin-top: 0 !important;
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.65rem !important;
+        padding-left: var(--detail-title-left) !important;
+        padding-right: 4% !important;
+        overflow: visible !important;
+        align-items: center !important;
+        z-index: 2 !important;
+    }
+
+    .layout-desktop .itemDetailPage .detailPagePrimaryContent {
+        padding-top: var(--detail-ribbon-height) !important;
+    }
+
+    .layout-desktop .itemDetailPage .infoWrapper {
+        grid-row: 1 !important;
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        text-align: left !important;
+        position: relative !important;
+        z-index: 3 !important;
+    }
+
+    .layout-desktop .itemDetailPage .nameContainer {
+        align-items: flex-start !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .layout-desktop .itemDetailPage .itemName,
+    .layout-desktop .itemDetailPage .infoText.itemName {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        overflow-wrap: break-word !important;
+        font-size: clamp(1.9rem, 4.5vw, 2.6rem) !important;
+        line-height: 1.05 !important;
+    }
+
+    .layout-desktop .itemDetailPage .itemMiscInfo {
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        max-width: 100% !important;
+        margin-top: 0.3rem !important;
+        margin-bottom: 0 !important;
+        gap: 0.15rem 0.55rem !important;
+    }
+
+    .layout-desktop .itemDetailPage .mainDetailButtons {
+        grid-row: 2 !important;
+        display: flex !important;
+        position: relative !important;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: auto !important;
+        width: 100% !important;
+        max-width: none !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        margin-top: 0 !important;
+        transform: none !important;
+        z-index: 3 !important;
+    }
+
+    .layout-desktop .itemDetailPage .detailButton {
+        min-width: 2rem !important;
+        margin-left: 0.05rem !important;
+        margin-right: 0.05rem !important;
+    }
+	
+	.layout-desktop .itemDetailPage .nameContainer {
+		text-align: center;
+	}
+}
+
+/*
+   Narrow-width correction: keep the detail ribbon attached to the backdrop at
+   <= 46em / 736px. This intentionally overrides the top: 0 set in the previous
+   narrow layout block via --detail-ribbon-lift.
+*/
+@media all and (max-width: 46em) {
+	.layout-desktop .itemDetailPage {
+		--detail-ribbon-lift: 9.5rem;
+	}
+
+	.layout-desktop .itemDetailPage .detailRibbon {
+		top: calc(-1 * var(--detail-ribbon-lift)) !important;
+	}
+
+	.layout-desktop .itemDetailPage .detailPagePrimaryContent {
+		margin-top: calc(-1 * var(--detail-ribbon-lift)) !important;
+	}
+}
+
+/*
+   Final responsive detail-layout tuning requested on 2026-06-29.
+   The duplicate poster/card declarations and repeated button sizing were
+   removed. The remaining padding-top adds vertical separation in the final
+   narrow layout.
+*/
+@media all and (max-width: 46em) {
+    .layout-desktop .itemDetailPage .mainDetailButtons {
+        padding-top: 0.35rem !important;
+    }
+}
+
+/*
+   Mid-width detail button tuning for roughly 737px through 920px.
+   This overlaps conceptually with the max-width: 70em button tuning, but it is
+   not unreachable: min-width: 46.0625em excludes the narrow desktop layout and
+   narrows the button spacing in the tablet/split-screen band.
+*/
+@media all and (min-width: 46.0625em) and (max-width: 57.5em) {
+    .layout-desktop .itemDetailPage .mainDetailButtons {
+        padding-top: 0.35rem !important;
+    }
+
+    .layout-desktop .itemDetailPage .detailButton {
+        min-width: 2rem !important;
+        margin-left: 0.05rem !important;
+        margin-right: 0.05rem !important;
+    }
+}
