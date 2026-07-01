@@ -34,7 +34,6 @@ Download one of the CSS files from `Jellyfin_Themes/`, open it in a text editor,
 
 - `Jellyfin_Themes/[CD9] Theme_Aurora Stream.css`: static theme.
 - `Jellyfin_Themes/[CD9] Theme_Aurora Stream - Animated.css`: animated theme.
-- `mock.css`: reference stylesheet generated from Jellyfin Web. This is useful while building themes, but it is not meant to be imported as a Jellyfin theme.
 
 ## Notes
 
