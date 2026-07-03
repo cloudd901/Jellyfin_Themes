@@ -1056,6 +1056,11 @@ progress[aria-valuenow]::before,
     color: var(--aurora-text) !important;
 }
 
+.noBackdropTransparency .detailPagePrimaryContainer,
+.noBackdropTransparency .detailPageSecondaryContainer {
+    background-color: var(--aurora-bg) !important;
+}
+
 /*
    Poster hover border fix:
    Early versions scaled/dimmed the detail poster on hover, which clipped the
@@ -1459,21 +1464,21 @@ progress[aria-valuenow]::before,
        targeted by this desktop-scoped override.
     */
     html.layout-desktop body:has(.itemDetailPage) {
-        /* Keep the real backdrop and spacer heights matched near the 1000px breakpoint. */
-        --aurora-detail-backdrop-height: clamp(26rem, 58vh, 34rem);
+        /* Match the base 1000px height so the detail ribbon does not jump upward. */
+        --aurora-detail-backdrop-height: clamp(28rem, calc(2rem + 38vw), 34rem);
     }
 
     @supports not selector(:has(*)) {
         html.layout-desktop body {
             /* Windows host fallback counterpart for the 1000px detail height. */
-            --aurora-detail-backdrop-height: clamp(26rem, 58vh, 34rem);
+            --aurora-detail-backdrop-height: clamp(28rem, calc(2rem + 38vw), 34rem);
         }
     }
 
     .layout-desktop .itemDetailPage .itemBackdrop {
         /* Spacer counterpart for --aurora-detail-backdrop-height above. */
         height: var(--aurora-detail-backdrop-height) !important;
-        min-height: 26rem;
+        min-height: 28rem;
     }
 
     .layout-desktop .itemDetailPage .detailImageContainer.hide-mobile .card {
