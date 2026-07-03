@@ -4,8 +4,23 @@ Custom CSS themes for Jellyfin.
 
 ## Themes
 
-- `Aurora Stream`: static cinematic theme with no CSS animations.
-- `Aurora Stream - Animated`: animated variant with ambience, card effects, and navigation highlights.
+### Aurora Stream
+
+- Dark cinematic color palette with brighter cyan, red, purple, green, and amber accents.
+- Reactive details banner and backdrop with expanded artwork space on wider screens.
+- Refined detail pages with stronger poster treatment, title logo placement, and polished action rows.
+- Frozen top navigation bar for easier browsing while scrolling.
+- Cleaner card styling, hover states, dashboard panels, menus, dialogs, and form controls.
+- Static presentation with no added CSS motion effects.
+
+### Aurora Stream - Animated
+
+- Includes the full Aurora Stream visual redesign.
+- Animated ambience, background grain, and subtle glow/highlight movement.
+- Animated section bars and navigation accents.
+- Reactive card hover effects and animated focus/selection treatments.
+- Animated navigation highlights and detail action button feedback.
+- Subtle animated backdrop movement with large-screen perceived sharpening adjustments.
 
 ## Install In Jellyfin
 
@@ -38,6 +53,6 @@ Download one of the CSS files from `Jellyfin_Themes/`, open it in a text editor,
 ## Notes
 
 - These themes are designed for Jellyfin Web and clients that load Jellyfin Web from your server.
-- Some mouseover glass animations may not work in the Windows app.
+- The Windows app may not support nav bar animation, backdrop perceived sharpening, or some mouseover glass animations.
 - If you already have custom CSS, paste the import line above your local overrides.
 - GitHub-backed jsDelivr URLs are used for imports so the CSS is served with browser-friendly stylesheet headers.

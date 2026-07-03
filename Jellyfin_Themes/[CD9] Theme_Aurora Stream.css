@@ -95,6 +95,22 @@ body {
    backdrop instead. Clip the global backdrop surface to the upper band and make
    .backgroundContainer transparent only in that band; below it the normal dark
    theme canvas takes over.
+
+   Detail-page backdrop map:
+   - .backdropContainer is the clipped viewport for the visible backdrop art.
+     Change its top/height when the rendered banner starts too high/low or ends
+     before the detail ribbon.
+   - .backdropContainer .backdropImage is the actual image layer. Change
+     --aurora-detail-backdrop-y / background-position when the crop should show
+     a different part of the source art.
+   - .itemBackdrop is the Jellyfin detail-page spacer. Change it only when the
+     detail ribbon needs more/less vertical room; it is not the visible image.
+   - .backgroundContainer.withBackdrop and its ::after are the darkening/fade
+     overlays. Keep their fade height aligned with the real backdrop container.
+   - Windows desktop host fallback: older embedded Chromium/WebView builds may
+     ignore body:has(.itemDetailPage). The @supports fallback below applies the
+     same variables globally on desktop because .backdropContainer is outside
+     .itemDetailPage and cannot be reached from the page node without :has().
 */
 .backdropContainer {
     top: 3.2em;
@@ -105,6 +121,28 @@ body {
 .backdropContainer .backdropImage {
     inset: 0;
     height: 100%;
+}
+
+html.layout-desktop body:has(.itemDetailPage) {
+    /* Detail backdrop controls: real container top/height plus image crop. */
+    --aurora-detail-backdrop-top: 3.35em;
+    /* Grow with viewport width so the detail ribbon drops lower on wide pages. */
+    --aurora-detail-backdrop-height: clamp(28rem, calc(2rem + 38vw), 68rem);
+    --aurora-detail-backdrop-y: clamp(-8rem, calc(-2rem - 2.4vw), -4rem);
+    --aurora-detail-backdrop-fade-start: calc(var(--aurora-detail-backdrop-top) + var(--aurora-detail-backdrop-height) - 5rem);
+    --aurora-detail-backdrop-fade-end: calc(var(--aurora-detail-backdrop-top) + var(--aurora-detail-backdrop-height));
+}
+
+html.layout-desktop body:has(.itemDetailPage) .backdropContainer {
+    /* Real visible backdrop viewport, not the detail-page spacer. */
+    top: var(--aurora-detail-backdrop-top);
+    height: var(--aurora-detail-backdrop-height);
+}
+
+html.layout-desktop body:has(.itemDetailPage) .backdropContainer .backdropImage {
+    /* Actual rendered artwork crop. Negative Y shows a lower slice of source art. */
+    background-position: center var(--aurora-detail-backdrop-y) !important;
+    background-size: cover !important;
 }
 
 .backgroundContainer.withBackdrop {
@@ -118,8 +156,26 @@ body {
         ) !important;
 }
 
+html.layout-desktop body:has(.itemDetailPage) .backgroundContainer.withBackdrop {
+    /* Detail-page fade follows the taller real backdrop instead of the 40vh base fade. */
+    background:
+        linear-gradient(
+            180deg,
+            rgba(7, 8, 13, 0.18) 0,
+            rgba(7, 8, 13, 0.38) var(--aurora-detail-backdrop-fade-start),
+            rgba(7, 8, 13, 0.98) var(--aurora-detail-backdrop-fade-end),
+            rgba(7, 8, 13, 1) 100%
+        ) !important;
+}
+
 .itemBackdrop {
 	height: 46vh;
+}
+
+.layout-desktop .itemDetailPage .itemBackdrop {
+    /* Spacer only: this controls room above .detailRibbon, not the visible art. */
+    height: var(--aurora-detail-backdrop-height) !important;
+    min-height: 28rem;
 }
 
 .backgroundContainer.withBackdrop::after {
@@ -131,6 +187,51 @@ body {
     background:
         linear-gradient(90deg, rgba(7, 8, 13, 0.48), transparent 28%, transparent 72%, rgba(7, 8, 13, 0.46)),
         linear-gradient(180deg, rgba(7, 8, 13, 0.08), rgba(7, 8, 13, 0.36)) !important;
+}
+
+html.layout-desktop body:has(.itemDetailPage) .backgroundContainer.withBackdrop::after {
+    /* Dark side/top overlay must cover the same vertical span as the real backdrop. */
+    height: var(--aurora-detail-backdrop-fade-end);
+}
+
+@supports not selector(:has(*)) {
+    html.layout-desktop body {
+        /*
+           Windows host fallback for older engines without :has().
+           This cannot be detail-page scoped because .backdropContainer is a
+           body-level sibling of the page, so keep this desktop-only.
+        */
+        --aurora-detail-backdrop-top: 3.35em;
+        --aurora-detail-backdrop-height: clamp(28rem, calc(2rem + 38vw), 68rem);
+        --aurora-detail-backdrop-y: clamp(-8rem, calc(-2rem - 2.4vw), -4rem);
+        --aurora-detail-backdrop-fade-start: calc(var(--aurora-detail-backdrop-top) + var(--aurora-detail-backdrop-height) - 5rem);
+        --aurora-detail-backdrop-fade-end: calc(var(--aurora-detail-backdrop-top) + var(--aurora-detail-backdrop-height));
+    }
+
+    html.layout-desktop .backdropContainer {
+        top: var(--aurora-detail-backdrop-top);
+        height: var(--aurora-detail-backdrop-height);
+    }
+
+    html.layout-desktop .backdropContainer .backdropImage {
+        background-position: center var(--aurora-detail-backdrop-y) !important;
+        background-size: cover !important;
+    }
+
+    html.layout-desktop .backgroundContainer.withBackdrop {
+        background:
+            linear-gradient(
+                180deg,
+                rgba(7, 8, 13, 0.18) 0,
+                rgba(7, 8, 13, 0.38) var(--aurora-detail-backdrop-fade-start),
+                rgba(7, 8, 13, 0.98) var(--aurora-detail-backdrop-fade-end),
+                rgba(7, 8, 13, 1) 100%
+            ) !important;
+    }
+
+    html.layout-desktop .backgroundContainer.withBackdrop::after {
+        height: var(--aurora-detail-backdrop-fade-end);
+    }
 }
 
 ::selection {
@@ -1192,8 +1293,8 @@ progress[aria-valuenow]::before,
     background-size: contain;
     height: 16vh;
     position: absolute;
-    /* Keep the original desktop placement. */
-    top: min(7vw, 80.5px);
+    /* Keep the logo lower in the expanded detail backdrop band. */
+    top: 11vw;
     left: 50%;
     right: auto;
     transform: translateX(-50%);
@@ -1316,6 +1417,7 @@ progress[aria-valuenow]::before,
     .layout-desktop [dir="ltr"] .itemDetailPage .detailRibbon {
         padding-left: 5% !important;
         padding-right: 5%;
+        padding-top: 25px !important;
     }
 
     .layout-desktop [dir="rtl"] .itemDetailPage .detailRibbon {
@@ -1356,9 +1458,41 @@ progress[aria-valuenow]::before,
        theme, keep the normal desktop negative offset; true mobile layout is not
        targeted by this desktop-scoped override.
     */
+    html.layout-desktop body:has(.itemDetailPage) {
+        /* Keep the real backdrop and spacer heights matched near the 1000px breakpoint. */
+        --aurora-detail-backdrop-height: clamp(26rem, 58vh, 34rem);
+    }
+
+    @supports not selector(:has(*)) {
+        html.layout-desktop body {
+            /* Windows host fallback counterpart for the 1000px detail height. */
+            --aurora-detail-backdrop-height: clamp(26rem, 58vh, 34rem);
+        }
+    }
+
+    .layout-desktop .itemDetailPage .itemBackdrop {
+        /* Spacer counterpart for --aurora-detail-backdrop-height above. */
+        height: var(--aurora-detail-backdrop-height) !important;
+        min-height: 26rem;
+    }
+
     .layout-desktop .itemDetailPage .detailImageContainer.hide-mobile .card {
         top: -12.96em;
         margin-bottom: -12.96em;
+    }
+}
+
+@media all and (min-width: 100em) and (max-height: 60em) {
+    html.layout-desktop body:has(.itemDetailPage) {
+        /* Wide, short windows need a gentler crop, but still pull up as width grows. */
+        --aurora-detail-backdrop-y: clamp(-5.75rem, calc(-1.5rem - 2.1vw), -3.5rem);
+    }
+
+    @supports not selector(:has(*)) {
+        html.layout-desktop body {
+            /* Windows host fallback counterpart for wide, short desktop windows. */
+            --aurora-detail-backdrop-y: clamp(-5.75rem, calc(-1.5rem - 2.1vw), -3.5rem);
+        }
     }
 }
 
@@ -1671,7 +1805,7 @@ body::after {
     }
 
     .layout-desktop .itemDetailPage .detailImageContainer.hide-mobile .card {
-        top: -21.96em !important;
+        top: -20.96em !important;
         margin: 0 !important;
         transform: none !important;
         width: 100% !important;
@@ -1776,7 +1910,7 @@ body::after {
 */
 @media all and (max-width: 46em) {
 	.layout-desktop .itemDetailPage {
-		--detail-ribbon-lift: 9.5rem;
+		--detail-ribbon-lift: 8.25rem;
 	}
 
 	.layout-desktop .itemDetailPage .detailRibbon {
