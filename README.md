@@ -32,13 +32,13 @@ Custom CSS themes for Jellyfin.
 ### Aurora Stream
 
 ```css
-@import url("https://cdn.jsdelivr.net/gh/cloudd901/Jellyfin_Themes@main/Jellyfin_Themes/%5BCD9%5D%20Theme_Aurora%20Stream.css");
+@import url("https://cdn.jsdelivr.net/gh/cloudd901/Jellyfin_Themes@main/Jellyfin_Themes/%5BCD9%5D%20Theme_Aurora%20Stream.css?v=20260703-2747e36");
 ```
 
 ### Aurora Stream - Animated
 
 ```css
-@import url("https://cdn.jsdelivr.net/gh/cloudd901/Jellyfin_Themes@main/Jellyfin_Themes/%5BCD9%5D%20Theme_Aurora%20Stream%20-%20Animated.css");
+@import url("https://cdn.jsdelivr.net/gh/cloudd901/Jellyfin_Themes@main/Jellyfin_Themes/%5BCD9%5D%20Theme_Aurora%20Stream%20-%20Animated.css?v=20260703-2747e36");
 ```
 
 ## Manual Install
@@ -56,4 +56,4 @@ Download one of the CSS files from `Jellyfin_Themes/`, open it in a text editor,
 - These themes are designed for Jellyfin Web and clients that load Jellyfin Web from your server.
 - The Windows app may not support nav bar animation, backdrop perceived sharpening, or some mouseover glass animations.
 - If you already have custom CSS, paste the import line above your local overrides.
-- GitHub-backed jsDelivr URLs are used for imports so the CSS is served with browser-friendly stylesheet headers.
+- GitHub-backed jsDelivr URLs are used for imports so the CSS is served with browser-friendly stylesheet headers. The `v=` query string is a cache buster; update it when publishing a new theme version.
