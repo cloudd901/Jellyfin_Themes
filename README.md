@@ -53,6 +53,7 @@ Download one of the CSS files from `Jellyfin_Themes/`, open it in a text editor,
 ## Notes
 
 - Aurora Stream and Aurora Stream - Animated are dark-mode themes. They apply a dark canvas and light text through custom CSS, but they do not change Jellyfin's saved display theme setting.
+- These themes were made against Jellyfin Web version 10.11.11.
 - These themes are designed for Jellyfin Web and clients that load Jellyfin Web from your server.
 - The Windows app may not support nav bar animation, backdrop perceived sharpening, or some mouseover glass animations.
 - If you already have custom CSS, paste the import line above your local overrides.
