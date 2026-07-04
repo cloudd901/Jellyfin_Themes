@@ -22,6 +22,22 @@ Custom CSS themes for Jellyfin.
 - Animated navigation highlights and detail action button feedback.
 - Subtle animated backdrop movement with large-screen perceived sharpening adjustments.
 
+## Screenshots
+
+### Detail Page
+
+![Moonlit Fantasy details med-large](screenshots/01-moonlit-fantasy-details-med-large-1366x900.png)
+
+![Moonlit Fantasy details narrow](screenshots/02-moonlit-fantasy-details-narrow-700x900.png)
+
+![Moonlit Fantasy details scrolled frozen header](screenshots/03-moonlit-fantasy-details-scrolled-frozen-header-1366x900.png)
+
+### Home
+
+![Home showcase med-large](screenshots/04-home-showcase-med-large-1366x900.png)
+
+![Home showcase movie hover actions](screenshots/05-home-showcase-movie-hover-actions-visible-browser-1366x900.png)
+
 ## Install In Jellyfin
 
 1. Open Jellyfin as an administrator.
